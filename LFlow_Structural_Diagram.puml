@@ -1,0 +1,86 @@
+@startuml LFlow_Structural_Diagram
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+enum LeadStatus {
+  PENDING
+  CONTACTED
+  INTERESTED
+  FOLLOW_UP_REQUIRED
+  NO_ANSWER
+  WON
+  LOST
+}
+
+class User {
+  + id: String
+  + name: String
+  + role: String
+}
+
+class Lead {
+  + id: String
+  + customerName: String
+  + serviceInterest: String
+  + appointmentDate: Date
+  + setterId: String
+  + closerId: String
+  + status: LeadStatus
+  + notes: List<String>
+  + addNote(note: String): void
+  + updateStatus(newStatus: LeadStatus): void
+}
+
+interface ILeadRepository <<Interface>> {
+  + save(lead: Lead): void
+  + update(lead: Lead): void
+  + getAll(): List<Lead>
+  + getById(id: String): Lead
+  + getByCloserId(closerId: String): List<Lead>
+  + getBySetterId(setterId: String): List<Lead>
+}
+
+class LocalStorageLeadRepository {
+  - storageKey: String
+  - mapToDomain(rawJson: Object): Lead
+  + save(lead: Lead): void
+  + update(lead: Lead): void
+  + getAll(): List<Lead>
+  + getById(id: String): Lead
+  + getByCloserId(closerId: String): List<Lead>
+  + getBySetterId(setterId: String): List<Lead>
+}
+
+class LeadService {
+  - repository: ILeadRepository
+  + createAppointment(data: Object, setterId: String): Lead
+  + getLeadsForCloser(closerId: String): List<Lead>
+  + getLeadsBySetter(setterId: String): List<Lead>
+  + updateLeadOutcome(leadId: String, status: LeadStatus, note: String): void
+}
+
+class SetterDashboardController {
+  - leadService: LeadService
+  - currentUser: User
+  + handleAppointmentSubmit(event: Event): void
+  + renderSubmittedLeads(): void
+}
+
+class CloserDashboardController {
+  - leadService: LeadService
+  - currentUser: User
+  + handleStatusUpdate(event: Event): void
+  + renderAssignedAppointments(): void
+}
+
+ILeadRepository <|.. LocalStorageLeadRepository : <<Realizes>>
+LeadService --> ILeadRepository : <<Protected Variations>>
+LocalStorageLeadRepository ..> Lead : <<Instantiates / Maps>>
+LeadStatus -up-+ Lead
+SetterDashboardController --> LeadService : <<Controller>>
+CloserDashboardController --> LeadService : <<Controller>>
+Lead "*" -right-> "1" User : setter
+Lead "*" -right-> "1" User : closer
+
+@enduml
