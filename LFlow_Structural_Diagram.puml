@@ -1,9 +1,15 @@
 @startuml LFlow_Structural_Diagram
 skinparam classAttributeIconSize 0
-skinparam monochrome true
-skinparam shadowing false
+skinparam monochrome false
+skinparam shadowing true
+skinparam roundcorner 8
+skinparam class {
+  BackgroundColor White
+  ArrowColor #2563EB
+  BorderColor #3B82F6
+}
 
-enum LeadStatus {
+enum LeadStatus <<Enumeration>> {
   PENDING
   CONTACTED
   INTERESTED
@@ -17,19 +23,43 @@ class User {
   + id: String
   + name: String
   + role: String
+  + email: String
+  + avatar: String
+  + isSetter(): Boolean
+  + isCloser(): Boolean
+}
+
+class HistoryEntry {
+  + id: String
+  + timestamp: String
+  + userId: String
+  + userName: String
+  + userRole: String
+  + fromStatus: String
+  + toStatus: String
+  + note: String
+  + actionType: String
+  + toJSON(): Object
 }
 
 class Lead {
   + id: String
   + customerName: String
+  + phoneNumber: String
+  + email: String
   + serviceInterest: String
-  + appointmentDate: Date
+  + appointmentDate: String
+  + appointmentTime: String
   + setterId: String
   + closerId: String
   + status: LeadStatus
   + notes: List<String>
-  + addNote(note: String): void
-  + updateStatus(newStatus: LeadStatus): void
+  + history: List<HistoryEntry>
+  + createdAt: String
+  + updatedAt: String
+  + addNote(note: String, user: User): void
+  + updateStatus(newStatus: LeadStatus, note: String, user: User): void
+  + toJSON(): Object
 }
 
 interface ILeadRepository <<Interface>> {
@@ -39,48 +69,115 @@ interface ILeadRepository <<Interface>> {
   + getById(id: String): Lead
   + getByCloserId(closerId: String): List<Lead>
   + getBySetterId(setterId: String): List<Lead>
+  + clearAll(): void
+  + saveAll(leads: List<Lead>): void
 }
 
 class LocalStorageLeadRepository {
   - storageKey: String
-  - mapToDomain(rawJson: Object): Lead
+  - _mapToDomain(rawJson: Object): Lead
+  - _readRaw(): List<Object>
+  - _writeRaw(items: List<Object>): void
   + save(lead: Lead): void
   + update(lead: Lead): void
   + getAll(): List<Lead>
   + getById(id: String): Lead
   + getByCloserId(closerId: String): List<Lead>
   + getBySetterId(setterId: String): List<Lead>
+  + clearAll(): void
+  + saveAll(leads: List<Lead>): void
+}
+
+class EventEmitter <<Observer>> {
+  - events: Map<String, Set<Function>>
+  + on(event: String, listener: Function): Function
+  + off(event: String, listener: Function): void
+  + emit(event: String, data: Any): void
+  + clear(): void
+}
+
+class UserService {
+  - demoUsers: List<User>
+  - activeUser: User
+  - eventEmitter: EventEmitter
+  + getAllUsers(): List<User>
+  + getClosers(): List<User>
+  + getSetters(): List<User>
+  + getUserById(id: String): User
+  + getActiveUser(): User
+  + setActiveUser(userId: String): User
 }
 
 class LeadService {
   - repository: ILeadRepository
-  + createAppointment(data: Object, setterId: String): Lead
+  - userService: UserService
+  - eventEmitter: EventEmitter
+  + createAppointment(data: Object, setter: User): Lead
+  + updateLeadOutcome(leadId: String, newStatus: LeadStatus, note: String, closer: User): Lead
   + getLeadsForCloser(closerId: String): List<Lead>
   + getLeadsBySetter(setterId: String): List<Lead>
-  + updateLeadOutcome(leadId: String, status: LeadStatus, note: String): void
+  + getLeadById(id: String): Lead
+  + getAllLeads(): List<Lead>
+  + getStatistics(user: User): Object
+  + validateAppointmentData(data: Object): Object
+  + initSeedDataIfEmpty(seedItems: List<Object>): void
+  + resetToSeedData(seedItems: List<Object>): void
 }
 
-class SetterDashboardController {
+class AppController {
   - leadService: LeadService
-  - currentUser: User
-  + handleAppointmentSubmit(event: Event): void
-  + renderSubmittedLeads(): void
+  - userService: UserService
+  - dashboardController: DashboardController
+  - modalController: ModalController
+  - eventEmitter: EventEmitter
+  + init(): void
+  + renderUserSwitcherOptions(): void
+  + renderHeaderUserInfo(): void
 }
 
-class CloserDashboardController {
+class DashboardController {
   - leadService: LeadService
-  - currentUser: User
-  + handleStatusUpdate(event: Event): void
-  + renderAssignedAppointments(): void
+  - userService: UserService
+  - eventEmitter: EventEmitter
+  - searchTerm: String
+  - statusFilter: String
+  + render(): void
+  + renderRoleBanner(): void
+  + renderStats(): void
+  + renderTable(): void
+  + resetFilters(): void
+  + getFilteredLeads(): List<Lead>
 }
 
+class ModalController {
+  - leadService: LeadService
+  - userService: UserService
+  - eventEmitter: EventEmitter
+  + openCreateModal(): void
+  + closeCreateModal(): void
+  + openLeadDetails(leadId: String): void
+  + closeDetailsModal(): void
+  + refreshCurrentDetails(): void
+  + populateCloserOptions(): void
+}
+
+' Relationships & Realizations
 ILeadRepository <|.. LocalStorageLeadRepository : <<Realizes>>
-LeadService --> ILeadRepository : <<Protected Variations>>
-LocalStorageLeadRepository ..> Lead : <<Instantiates / Maps>>
-LeadStatus -up-+ Lead
-SetterDashboardController --> LeadService : <<Controller>>
-CloserDashboardController --> LeadService : <<Controller>>
-Lead "*" -right-> "1" User : setter
-Lead "*" -right-> "1" User : closer
+LeadService --> ILeadRepository : <<Dependency Inversion>>
+LeadService --> UserService : <<Uses>>
+LeadService --> EventEmitter : <<Publishes Events>>
+LocalStorageLeadRepository ..> Lead : <<Instantiates / Persists>>
+
+Lead *-- "0..*" HistoryEntry : <<Maintains Audit Trail>>
+Lead -right-> LeadStatus : <<Has>>
+Lead --> User : setter
+Lead --> User : closer
+
+AppController --> LeadService : <<Controls>>
+AppController --> UserService : <<Controls>>
+AppController --> DashboardController : <<Coordinates>>
+AppController --> ModalController : <<Coordinates>>
+DashboardController --> LeadService : <<Reads & Filters>>
+ModalController --> LeadService : <<Mutates & Updates>>
 
 @enduml
