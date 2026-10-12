@@ -37,7 +37,9 @@ The project follows a clean, modular directory structure aligned with the **Mode
 LeadFlow/
 ├── index.html                           # Semantic HTML5 entry document & accessible UI shell
 ├── server.ps1                           # Lightweight PowerShell static server (zero npm setup)
-├── LFlow_Structural_Diagram.puml        # PlantUML structural design class diagram
+├── ProjectDesign/
+│   ├── LFlow_Structural_Diagram.puml   # PlantUML structural design class diagram
+│   └── LFlow_Structural_Diagram.svg    # Pre-rendered vector SVG preview of the architecture
 ├── README.md                            # Complete architectural & technical documentation
 ├── css/
 │   └── styles.css                       # Modern SaaS design system with CSS custom properties
@@ -262,7 +264,7 @@ Use this checklist during demonstrations, peer reviews, or grading:
 
 ## 9. Structural UML Class Diagram
 
-The complete PlantUML specification is stored in [`LFlow_Structural_Diagram.puml`](file:///c:/LeadFlow/LFlow_Structural_Diagram.puml).
+The complete PlantUML specification is stored in [`ProjectDesign/LFlow_Structural_Diagram.puml`](file:///c:/LeadFlow/ProjectDesign/LFlow_Structural_Diagram.puml). A pre-rendered vector diagram is also available at [`ProjectDesign/LFlow_Structural_Diagram.svg`](file:///c:/LeadFlow/ProjectDesign/LFlow_Structural_Diagram.svg).
 
 ```
 +---------------------------------------------------------------------------------------+
