@@ -136,54 +136,37 @@ The repository includes visual specifications modeled in PlantUML. High-resoluti
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Setter as Appointment Setter (Sarah)
-    actor Closer as Assigned Closer (Alex)
-    participant UI as Web UI (index.html)
-    participant ModalCtrl as ModalController
-    participant DashCtrl as DashboardController
+    actor Setter as Setter (Sarah)
+    actor Closer as Closer (Alex)
+    participant UI as LeadFlow UI
     participant Service as LeadService
-    participant EventBus as EventEmitter
-    participant Entity as Lead (Domain Model)
-    participant Repo as LocalStorageLeadRepository
-    participant Storage as Browser localStorage
+    participant Storage as LocalStorage
 
-    %% 1. Lead Scheduling
+    %% Phase 1: Appointment Scheduling
     Note over Setter, Storage: Phase 1: Appointment Scheduling
-    Setter->>UI: Fills appointment form & clicks "Create"
-    UI->>ModalCtrl: _handleCreateSubmit(event)
-    ModalCtrl->>Service: createAppointment(payload, setterUser)
-    Service->>Service: validateAppointmentData(payload)
-    Service->>Entity: new Lead(payload, initialStatus=PENDING)
-    Service->>Repo: save(lead)
-    Repo->>Storage: setItem("leadflow_leads", JSON)
-    Service->>EventBus: emit("lead:created", lead)
-    EventBus->>DashCtrl: on("lead:created") -> re-render KPIs & table
-    ModalCtrl-->>UI: Close modal & display success toast
+    Setter->>UI: Submits new appointment details
+    UI->>Service: createAppointment(leadData)
+    Service->>Storage: Save new lead (status: PENDING)
+    Service-->>UI: Trigger dashboard and KPI refresh
+    UI-->>Setter: Confirm creation and show in table
 
-    %% 2. Closer Outcome Update
+    %% Phase 2: Closer Consultation & Outcome Update
     Note over Closer, Storage: Phase 2: Closer Consultation & Outcome Update
-    Closer->>UI: Switches user to Alex; clicks "Update & History"
-    UI->>ModalCtrl: openLeadDetails(leadId)
-    ModalCtrl->>Service: getLeadById(leadId)
-    Service->>Repo: getById(leadId)
-    ModalCtrl-->>UI: Render Customer Meta & Outcome Form
-    Closer->>UI: Selects status "WON", enters outcome notes, clicks "Save"
-    UI->>ModalCtrl: _handleCloserUpdateSubmit(event)
-    ModalCtrl->>Service: updateLeadOutcome(leadId, "WON", note, closerUser)
-    Service->>Service: verifyPermissions(closerUser, lead)
-    Service->>Entity: updateStatus("WON", note, closerUser)
-    Entity->>Entity: append new HistoryEntry(immutable)
-    Service->>Repo: update(lead)
-    Repo->>Storage: setItem("leadflow_leads", JSON)
-    Service->>EventBus: emit("lead:updated", lead)
-    EventBus->>DashCtrl: on("lead:updated") -> update KPIs & row badge
-    ModalCtrl-->>UI: Re-render timeline with new outcome record
+    Closer->>UI: Selects assigned lead
+    UI->>Service: getLeadById(id)
+    Service->>Storage: Retrieve lead record
+    Storage-->>Service: Return lead data
+    Service-->>UI: Populate details and outcome form
+    Closer->>UI: Submits outcome (e.g. WON) and consultation notes
+    UI->>Service: updateLeadOutcome(id, status, notes)
+    Service->>Storage: Persist updated lead and audit history
+    Service-->>UI: Trigger dashboard and KPI refresh
+    UI-->>Closer: Display updated status and audit timeline
 
-    %% 3. Setter Feedback Loop
+    %% Phase 3: Closed Feedback Loop
     Note over Setter, Storage: Phase 3: Closed Feedback Loop
-    Setter->>UI: Switches back to Sarah; views lead details
-    UI->>ModalCtrl: openLeadDetails(leadId)
-    ModalCtrl-->>UI: Renders read-only audit log with Alex's notes and WON status
+    Setter->>UI: Inspects lead audit trail
+    UI-->>Setter: Displays full history with Closer notes
 ```
 
 ---
