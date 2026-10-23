@@ -1,0 +1,125 @@
+@startuml LFlow_Seq_2_Closer_Outcome
+autonumber
+skinparam monochrome false
+skinparam shadowing true
+skinparam roundcorner 8
+skinparam BoxPadding 10
+skinparam ParticipantPadding 10
+
+skinparam sequence {
+  ArrowColor #EA580C
+  ActorBorderColor #EA580C
+  LifeLineBorderColor #F97316
+  LifeLineBackgroundColor #FFF7ED
+  ParticipantBorderColor #F97316
+  ParticipantBackgroundColor White
+  ParticipantFontStyle bold
+}
+
+title Scenario 2: Closer Consultation, Status Advancement & Audit Recording (Closer Workflow)
+
+actor "Assigned Closer\n(Alex Rivera)" as Closer #FEF3C7
+
+box "Presentation Layer (MVC View & Controllers)" #F8FAFC
+  participant "Web UI\n(index.html)" as UI
+  participant "ModalController" as ModalCtrl
+  participant "DashboardController" as DashCtrl
+end box
+
+box "Business Logic & Service Layer" #F0FDF4
+  participant "UserService" as UserSvc
+  participant "LeadService" as Service
+  participant "EventEmitter\n(Observer Bus)" as EventBus
+end box
+
+box "Domain / Model Layer" #FAF5FF
+  participant "Lead\n(Domain Entity)" as LeadEntity
+  participant "HistoryEntry\n(Audit Record)" as HistoryRecord
+end box
+
+box "Data Persistence Layer" #FFFBEB
+  participant "LocalStorageLeadRepository\n(ILeadRepository)" as Repo
+  database "Browser\nlocalStorage" as LocalStorage
+end box
+
+== 2. Assigned Closer Conducts Consultation & Records Outcome ==
+
+Closer -> UI : Switches account to Alex Rivera;\nClicks "View Details" on assigned lead
+activate UI
+UI -> ModalCtrl : openLeadDetails(leadId)
+activate ModalCtrl
+
+ModalCtrl -> Service : getLeadById(leadId)
+activate Service
+Service -> Repo : getById(leadId)
+activate Repo
+Repo --> Service : lead
+deactivate Repo
+Service --> ModalCtrl : lead
+deactivate Service
+
+ModalCtrl -> UI : Renders Customer Meta, Audit Timeline, and Closer Update Form
+deactivate ModalCtrl
+UI --> Closer : Shows editable Outcome Form (status options & notes textarea)
+deactivate UI
+
+Closer -> UI : Selects newStatus="WON", inputs outcome notes,\nClicks "Save Status Update"
+activate UI
+UI -> ModalCtrl : _handleCloserUpdateSubmit(event, leadId)
+activate ModalCtrl
+
+ModalCtrl -> UserSvc : getActiveUser()
+activate UserSvc
+UserSvc --> ModalCtrl : closerUser (role: "closer")
+deactivate UserSvc
+
+ModalCtrl -> Service : updateLeadOutcome(leadId, newStatus="WON", note, closerUser)
+activate Service
+
+Service -> Service : verifyPermissions(lead, closerUser)
+note right of Service : Asserts closerUser.role === 'closer'\nand lead.closerId === closerUser.id
+
+Service -> LeadEntity : updateStatus("WON", note, closerUser)
+activate LeadEntity
+
+create HistoryRecord
+LeadEntity -> HistoryRecord : new HistoryEntry(closerUser, fromStatus=PENDING, toStatus=WON, note)
+activate HistoryRecord
+HistoryRecord --> LeadEntity : updateHistory
+deactivate HistoryRecord
+
+LeadEntity -> LeadEntity : Appends immutable HistoryEntry to history list;\nUpdates status to WON and sets updatedAt timestamp
+LeadEntity --> Service : void
+deactivate LeadEntity
+
+Service -> Repo : update(lead)
+activate Repo
+Repo -> LocalStorage : setItem("leadflow_leads", serializedLeads)
+activate LocalStorage
+LocalStorage --> Repo : success
+deactivate LocalStorage
+Repo --> Service : void
+deactivate Repo
+
+Service -> EventBus : emit("lead:updated", lead)
+activate EventBus
+
+EventBus -> DashCtrl : on("lead:updated")
+activate DashCtrl
+DashCtrl -> DashCtrl : renderStats() & renderTable()
+DashCtrl -> UI : Increments "Deals Won" KPI & updates table row badge
+DashCtrl --> EventBus : done
+deactivate DashCtrl
+EventBus --> Service : done
+deactivate EventBus
+
+Service --> ModalCtrl : lead
+deactivate Service
+
+ModalCtrl -> ModalCtrl : refreshCurrentDetails()
+ModalCtrl -> UI : Re-renders timeline with new audit entry & Toast.success()
+deactivate ModalCtrl
+UI --> Closer : Displays updated audit trail with "WON" status pill
+deactivate UI
+
+@enduml

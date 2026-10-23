@@ -1,0 +1,78 @@
+@startuml LFlow_Seq_3_Audit_Inspection
+autonumber
+skinparam monochrome false
+skinparam shadowing true
+skinparam roundcorner 8
+skinparam BoxPadding 10
+skinparam ParticipantPadding 10
+
+skinparam sequence {
+  ArrowColor #7C3AED
+  ActorBorderColor #7C3AED
+  LifeLineBorderColor #8B5CF6
+  LifeLineBackgroundColor #F5F3FF
+  ParticipantBorderColor #8B5CF6
+  ParticipantBackgroundColor White
+  ParticipantFontStyle bold
+}
+
+title Scenario 3: Closed Feedback Loop — Setter Inspects Immutable Audit Timeline
+
+actor "Appointment Setter\n(Sarah Jenkins)" as Setter #EFF6FF
+
+box "Presentation Layer (MVC View & Controllers)" #F8FAFC
+  participant "Web UI\n(index.html)" as UI
+  participant "ModalController" as ModalCtrl
+end box
+
+box "Business Logic & Service Layer" #F0FDF4
+  participant "LeadService" as Service
+end box
+
+box "Domain / Model Layer" #FAF5FF
+  participant "Lead\n(Domain Entity)" as LeadEntity
+  participant "HistoryEntry\n(Audit Records)" as HistoryRecord
+end box
+
+box "Data Persistence Layer" #FFFBEB
+  participant "LocalStorageLeadRepository\n(ILeadRepository)" as Repo
+  database "Browser\nlocalStorage" as LocalStorage
+end box
+
+== 3. Closed Feedback Loop: Setter Reviews Deal History ==
+
+Setter -> UI : Switches back to Sarah Jenkins;\nClicks "View Details" on lead
+activate UI
+
+UI -> ModalCtrl : openLeadDetails(leadId)
+activate ModalCtrl
+
+ModalCtrl -> Service : getLeadById(leadId)
+activate Service
+
+Service -> Repo : getById(leadId)
+activate Repo
+
+Repo -> LocalStorage : getItem("leadflow_leads")
+activate LocalStorage
+LocalStorage --> Repo : serializedLeads
+deactivate LocalStorage
+
+Repo -> LeadEntity : reconstitute with history list
+activate LeadEntity
+LeadEntity --> Repo : lead (with complete HistoryEntry list)
+deactivate LeadEntity
+
+Repo --> Service : lead
+deactivate Repo
+
+Service --> ModalCtrl : lead
+deactivate Service
+
+ModalCtrl -> UI : Renders Read-Only View with complete chronological audit history
+deactivate ModalCtrl
+
+UI --> Setter : Setter reviews timestamped outcome notes and transition (PENDING -> WON)
+deactivate UI
+
+@enduml

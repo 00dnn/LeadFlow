@@ -1,0 +1,106 @@
+@startuml LFlow_Seq_1_Appointment_Creation
+autonumber
+skinparam monochrome false
+skinparam shadowing true
+skinparam roundcorner 8
+skinparam BoxPadding 10
+skinparam ParticipantPadding 10
+
+skinparam sequence {
+  ArrowColor #2563EB
+  ActorBorderColor #2563EB
+  LifeLineBorderColor #3B82F6
+  LifeLineBackgroundColor #EFF6FF
+  ParticipantBorderColor #3B82F6
+  ParticipantBackgroundColor White
+  ParticipantFontStyle bold
+}
+
+title Scenario 1: Appointment Intake, Scheduling & Closer Assignment (Setter Workflow)
+
+actor "Appointment Setter\n(Sarah Jenkins)" as Setter #EFF6FF
+
+box "Presentation Layer (MVC View & Controllers)" #F8FAFC
+  participant "Web UI\n(index.html)" as UI
+  participant "ModalController" as ModalCtrl
+  participant "DashboardController" as DashCtrl
+end box
+
+box "Business Logic & Service Layer" #F0FDF4
+  participant "UserService" as UserSvc
+  participant "LeadService" as Service
+  participant "EventEmitter\n(Observer Bus)" as EventBus
+end box
+
+box "Domain / Model Layer" #FAF5FF
+  participant "HistoryEntry\n(Audit Record)" as HistoryRecord
+  participant "Lead\n(Domain Entity)" as LeadEntity
+end box
+
+box "Data Persistence Layer" #FFFBEB
+  participant "LocalStorageLeadRepository\n(ILeadRepository)" as Repo
+  database "Browser\nlocalStorage" as LocalStorage
+end box
+
+== 1. Appointment Setter Schedules & Assigns Lead ==
+
+Setter -> UI : Enters appointment details (Customer, Phone, Date, Closer, Notes)\nClicks "Create Appointment"
+activate UI
+
+UI -> ModalCtrl : _handleCreateSubmit(event)
+activate ModalCtrl
+
+ModalCtrl -> UserSvc : getActiveUser()
+activate UserSvc
+UserSvc --> ModalCtrl : setterUser (role: "setter")
+deactivate UserSvc
+
+ModalCtrl -> Service : createAppointment(payload, setterUser)
+activate Service
+
+Service -> Service : validateAppointmentData(payload)
+note right of Service : Validates name (>= 2 chars), phone (>= 7 digits),\nrequired closer assignment, and valid date/time
+
+create HistoryRecord
+Service -> HistoryRecord : new HistoryEntry(setterUser, actionType="created", toStatus=PENDING)
+activate HistoryRecord
+HistoryRecord --> Service : creationHistory
+deactivate HistoryRecord
+
+create LeadEntity
+Service -> LeadEntity : new Lead(id="LF-xxxxxx", status=PENDING, history=[creationHistory])
+activate LeadEntity
+LeadEntity --> Service : newLead
+deactivate LeadEntity
+
+Service -> Repo : save(newLead)
+activate Repo
+Repo -> LocalStorage : setItem("leadflow_leads", serializedLeads)
+activate LocalStorage
+LocalStorage --> Repo : success
+deactivate LocalStorage
+Repo --> Service : void
+deactivate Repo
+
+Service -> EventBus : emit("lead:created", newLead)
+activate EventBus
+
+EventBus -> DashCtrl : on("lead:created")
+activate DashCtrl
+DashCtrl -> DashCtrl : renderStats() & renderTable()
+DashCtrl -> UI : Increments "Total Submitted" KPI & appends lead row to table
+DashCtrl --> EventBus : done
+deactivate DashCtrl
+EventBus --> Service : done
+deactivate EventBus
+
+Service --> ModalCtrl : newLead
+deactivate Service
+
+ModalCtrl -> UI : closeCreateModal() & Toast.success("Appointment scheduled successfully!")
+deactivate ModalCtrl
+
+UI --> Setter : Displays success feedback & updated dashboard
+deactivate UI
+
+@enduml
