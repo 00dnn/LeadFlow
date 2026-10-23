@@ -1,14 +1,5 @@
 # LeadFlow — Lead & Appointment Management System
 
-### Part 1: System Design & Object-Oriented Modeling
-
-[![Deliverable](https://img.shields.io/badge/Deliverable-Part_1:_Class_%26_Sequence_Diagrams-blueviolet)]()
-[![UML Standard](https://img.shields.io/badge/Modeling-UML_2.5_(PlantUML)-2563EB)](https://plantuml.com/)
-[![Architecture](https://img.shields.io/badge/Architecture-Layered_MVC-059669)]()
-[![Design Patterns](https://img.shields.io/badge/Design_Patterns-GoF_%26_GRASP-F59E0B)]()
-[![SOLID Principles](https://img.shields.io/badge/SOLID-Principles_Enforced-10B981)]()
-[![Planned Stack](https://img.shields.io/badge/Planned_Implementation-Vanilla_JS_(ES6+)%20%7C%20HTML5%20%7C%20CSS3-yellow)]()
-[![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
 ---
 
