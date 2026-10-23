@@ -1,235 +1,259 @@
 # LeadFlow — Lead & Appointment Management System
 
-[![Vanilla JavaScript](https://img.shields.io/badge/Vanilla_JS-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![HTML5](https://img.shields.io/badge/HTML5-Semantic_Web-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS3](https://img.shields.io/badge/CSS3-Modern_SaaS_Theme-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![Architecture](https://img.shields.io/badge/Architecture-Layered_MVC-blueviolet)]()
-[![Design Patterns](https://img.shields.io/badge/Design_Patterns-GoF_%26_GRASP-2563EB)]()
-[![SOLID Principles](https://img.shields.io/badge/SOLID-Principles_Enforced-059669)]()
-[![Storage](https://img.shields.io/badge/Persistence-Browser_localStorage-blue)]()
+### Part 1: System Design & Object-Oriented Modeling
+
+[![Deliverable](https://img.shields.io/badge/Deliverable-Part_1:_Class_%26_Sequence_Diagrams-blueviolet)]()
+[![UML Standard](https://img.shields.io/badge/Modeling-UML_2.5_(PlantUML)-2563EB)](https://plantuml.com/)
+[![Architecture](https://img.shields.io/badge/Architecture-Layered_MVC-059669)]()
+[![Design Patterns](https://img.shields.io/badge/Design_Patterns-GoF_%26_GRASP-F59E0B)]()
+[![SOLID Principles](https://img.shields.io/badge/SOLID-Principles_Enforced-10B981)]()
+[![Planned Stack](https://img.shields.io/badge/Planned_Implementation-Vanilla_JS_(ES6+)%20%7C%20HTML5%20%7C%20CSS3-yellow)]()
 [![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
 ---
 
-## 1. Project Overview
+## 1. Project Overview & Scope
 
-**LeadFlow** is a web-based, role-oriented lead and appointment management platform engineered for sales teams. The application models the collaborative pipeline between front-line **Appointment Setters** (who qualify inbound/outbound prospects and schedule discovery consultations) and **Closers** (account executives who conduct consultations, advance opportunity stages, and document deal outcomes).
-
-Developed as a university group project for a **Software Design Principles and Patterns** course, LeadFlow serves as a rigorous reference implementation of **SOLID principles**, **GoF design patterns**, and **GRASP guidelines** implemented entirely in **vanilla JavaScript (ES6+)**, **HTML5**, and **CSS3**, without third-party frameworks, bundlers, or external database dependencies.
+**LeadFlow** is an enterprise-modeled, role-oriented lead and appointment management platform designed for sales operations. The system models the collaborative pipeline between front-line **Appointment Setters** (who qualify inbound/outbound prospects and schedule discovery consultations) and **Closers** (account executives who conduct consultations, advance opportunity stages, and document deal outcomes).
 
 ```
 ┌─────────────────────────────────┐                             ┌─────────────────────────────────┐
 │       Appointment Setter        │      1. Qualify & Assign    │             Closer              │
-│    (e.g., Sarah Jenkins)        │ ──────────────────────────> │      (e.g., Alex Rivera)        │
+│     (e.g., Sarah Jenkins)       │ ──────────────────────────> │      (e.g., Alex Rivera)        │
 │ • Intakes prospect data         │                             │ • Conducts consultation         │
 │ • Schedules appointments        │ <────────────────────────── │ • Advances deal status          │
-│ • Inspects live deal history    │     2. Immutable Outcomes   │ • Adds consultation notes       │
+│ • Inspects live deal history    │     2. Immutable Outcomes   │ • Records consultation notes    │
 └─────────────────────────────────┘                             └─────────────────────────────────┘
 ```
 
-### Key Highlights
-- **Framework-Free Core:** 100% vanilla ES6+ modules; runs directly in modern browsers without Babel, Webpack, or Vite build steps.
-- **Role-Based Workspaces:** Dedicated views and workflows for Appointment Setters and Closers with dynamic account switching.
-- **Immutable Audit Trail:** Chronological history tracking of every status transition, outcome note, timestamp, and responsible user.
-- **Zero-Backend Persistence:** Robust `localStorage` engine with JSON serialization, schema reconstitution, and error handling.
-- **Enterprise-Grade Architecture:** Clean separation of concerns through Layered MVC, Repository, Observer, and Dependency Injection patterns.
+### Academic Context & Project Milestones
+Developed for a university course in **Software Design Principles and Patterns**, this project follows a multi-phase engineering lifecycle:
+
+- **Part 1 (Current Deliverable):** System Architecture, Object-Oriented Analysis & Design (OOAD), formal **Structural Class Diagram**, and **End-to-End Sequence Diagram** incorporating SOLID design principles, GoF patterns, and GRASP guidelines.
+- **Part 2 (Future Phase):** Full-stack client implementation translating these architectural models into code (planned in vanilla ES6+ JavaScript, semantic HTML5, and CSS3).
+
+> [!NOTE]
+> **Part 1 Focus:** This repository and document currently focus on the architectural modeling deliverables (Class and Sequence Diagrams). Source code implementation and runtime testing will be completed in subsequent project phases.
 
 ---
 
-## 2. System Architecture & Design Principles
+## 2. System Architecture
 
-The application is structured into clearly separated architectural layers to ensure high cohesion, loose coupling, and maintainability.
+The system is designed around a decoupled, 5-layer architecture ensuring high cohesion, low coupling, and strict compliance with the **Dependency Inversion Principle (DIP)**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                           PRESENTATION LAYER                            │
-│                 (index.html, styles.css, DOM Elements)                  │
+│           (Web UI Views, DOM Interface, Semantic Templates)             │
 └────────────────────────────────────┬────────────────────────────────────┘
-                                     │ User Actions & DOM Events
+                                     │ User Actions & UI Events
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                            CONTROLLER LAYER                             │
-│   ├── AppController.js         (Lifecycle, Global User Switcher, Shell) │
-│   ├── DashboardController.js   (KPIs, Reactive Table, Search & Filter)  │
-│   └── ModalController.js       (Create Appointment, Details & Outcomes) │
+│   ├── AppController            (Application Lifecycle, Shell, Auth)    │
+│   ├── DashboardController      (KPI Metrics, Reactive Table, Filtering) │
+│   └── ModalController          (Appointment Intake, Outcome Modals)    │
 └──────────────┬───────────────────────────────────────────┬──────────────┘
-               │ Calls Operations                          │ Listens via Events
+               │ Invokes Operations                        │ Listens via Events
                ▼                                           ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                              SERVICE LAYER                              │
-│   ├── LeadService.js   (Business Rules, Validation, Permissions, Stats) │
-│   ├── UserService.js   (Demo Accounts, Active User State Management)    │
-│   └── EventEmitter.js  (Publish-Subscribe Event Bus)                    │
+│   ├── LeadService      (Business Rules, Validation, Permissions, Stats) │
+│   ├── UserService      (User Directory, Active Session State)           │
+│   └── EventEmitter     (Observer / Publish-Subscribe Event Bus)         │
 └──────────────┬──────────────────────────────────────────────────────────┘
                │ Reads / Persists Domain Entities
                ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                            REPOSITORY LAYER                             │
-│   ├── ILeadRepository.js            (Abstract Interface Contract - DIP) │
-│   └── LocalStorageLeadRepository.js (Concrete Browser Storage Adapter)  │
+│   ├── ILeadRepository            (Abstract Interface Contract - DIP)    │
+│   └── LocalStorageLeadRepository (Concrete Browser Storage Realization) │
 └──────────────┬──────────────────────────────────────────────────────────┘
-               │ Hydrates / Serializes
+               │ Reconstitutes / Serializes
                ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                          DOMAIN / MODEL LAYER                           │
-│   ├── Lead.js          (Lead Entity: Status, Assignment, State Transitions)│
-│   ├── HistoryEntry.js  (Immutable Audit Record Entity)                  │
-│   └── User.js          (User Identity, Role Capabilities)               │
+│   ├── Lead             (Core Aggregate Root: Status, Assignment)       │
+│   ├── HistoryEntry     (Immutable Audit Record Entity)                  │
+│   ├── User             (Actor Identity & Role Capabilities)             │
+│   └── LeadStatus       (Enumeration of Valid Pipeline Stages)           │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Application of SOLID Principles
+## 3. Part 1 Deliverables: UML Modeling Specifications
 
-| Principle | Architectural Implementation in LeadFlow |
-| :--- | :--- |
-| **Single Responsibility Principle (SRP)** | Every module has one single actor and reason to change. `LocalStorageLeadRepository` handles data serialization exclusively; `LeadService` enforces business policies and assignment permissions; `Sanitizer` provides XSS protection; `DashboardController` manages table rendering and filter logic. |
-| **Open/Closed Principle (OCP)** | Storage access is governed by the `ILeadRepository` interface contract. Persisting to `IndexedDB`, a RESTful API, or Firebase in the future requires adding a new repository subclass without modifying existing service or controller logic. Lead statuses and service categories are maintained via extensible enumeration objects. |
-| **Liskov Substitution Principle (LSP)** | `LocalStorageLeadRepository` strictly adheres to all method signatures and return contracts defined in `ILeadRepository`. Any consumer expecting `ILeadRepository` can consume `LocalStorageLeadRepository` without runtime surprises. |
-| **Interface Segregation Principle (ISP)** | Interface contracts specify only essential domain requirements (`save`, `update`, `getAll`, `getById`, `getByCloserId`, `getBySetterId`). Consumers are never forced to depend on methods they do not require. |
-| **Dependency Inversion Principle (DIP)** | High-level business logic (`LeadService`) does **not** import or instantiate low-level storage adapters (`LocalStorageLeadRepository` or `window.localStorage`). Instead, dependencies are injected into constructors via the Composition Root (`app.js`). |
+The core deliverables for **Part 1** are maintained as formal PlantUML models and high-resolution vector diagrams in the [`ProjectDesign/`](./ProjectDesign/) directory.
 
----
-
-## 4. Design Patterns Implemented
-
-### 4.1 GoF (Gang of Four) Patterns
-
-1. **Repository Pattern (`ILeadRepository`, `LocalStorageLeadRepository`):**  
-   Encapsulates the data access layer, mediating between domain entities (`Lead`) and the underlying persistence technology (`localStorage`).
-
-2. **Observer / Publish-Subscribe Pattern (`EventEmitter`):**  
-   Facilitates reactive, decoupled UI updates. When `LeadService` performs mutations, it publishes `lead:created` or `lead:updated` events. The `DashboardController` listens for these events and re-renders metrics and table rows automatically without tight circular couplings.
-
-3. **Factory Method Pattern (`Lead.fromJSON`, `HistoryEntry.fromJSON`, `User.fromJSON`):**  
-   Encapsulates the instantiation and validation logic required to reconstruct rich domain model instances from deserialized plain JSON objects.
-
-4. **Model-View-Controller (MVC):**  
-   - **Model:** `Lead`, `User`, `HistoryEntry` encapsulate application state, domain integrity, and state transitions.
-   - **View:** Declarative HTML5 templates and CSS custom properties.
-   - **Controller:** `AppController`, `DashboardController`, and `ModalController` handle DOM events, bind user interactions, and coordinate updates.
-
-5. **Dependency Injection (Composition Root in `app.js`):**  
-   All instances (`ILeadRepository`, `LeadService`, `UserService`, `EventEmitter`, and controllers) are created and wired together in one centralized entry point.
-
-### 4.2 GRASP (General Responsibility Assignment Software Patterns)
-
-- **Information Expert:** The `Lead` entity manages its own status updates and history entries, because it possesses all information required to maintain the audit trail.
-- **Creator:** The `Lead` entity creates instances of `HistoryEntry` whenever an outcome note or status transition occurs.
-- **Controller:** Distinct controllers (`AppController`, `DashboardController`, `ModalController`) serve as entry points for DOM events before invoking the service layer.
-- **Low Coupling & High Cohesion:** Responsibilities are strictly partitioned, minimizing dependencies across domain boundaries.
+| Diagram Type | PlantUML Source File | Rendered Vector Output | Primary Focus |
+| :--- | :--- | :--- | :--- |
+| **Structural Class Diagram** | [`LFlow_Structural_Diagram.puml`](./ProjectDesign/LFlow_Structural_Diagram.puml) | [`LFlow_Structural_Diagram.svg`](./ProjectDesign/LFlow_Structural_Diagram.svg) | Static structure, entities, interface contracts, and relationships |
+| **End-to-End Sequence Diagram** | [`LFlow_Sequence_Diagram.puml`](./ProjectDesign/LFlow_Sequence_Diagram.puml) | [`LFlow_Sequence_Diagram.svg`](./ProjectDesign/LFlow_Sequence_Diagram.svg) | Dynamic message passing, lifecycle workflows, and layer interactions |
 
 ---
 
-## 5. Architectural Diagrams
+### 3.1 Structural Class Diagram
 
-The repository includes visual specifications modeled in PlantUML. High-resolution vector diagrams can be inspected in the [`ProjectDesign/`](./ProjectDesign/) directory:
+The structural class diagram specifies all classes, data attributes, method signatures, visibility modifiers, and associations across the entire architecture.
 
-- [PlantUML Structural Class Diagram](./ProjectDesign/LFlow_Structural_Diagram.puml)
-- [SVG Structural Class Diagram](./ProjectDesign/LFlow_Structural_Diagram.svg)
-- [PlantUML Sequence Diagram](./ProjectDesign/LFlow_Sequence_Diagram.puml)
-- [SVG Sequence Diagram](./ProjectDesign/LFlow_Sequence_Diagram.svg)
+![LeadFlow Structural Class Diagram](./ProjectDesign/LFlow_Structural_Diagram.svg)
 
-### 5.1 End-to-End Sequence Diagram
+#### Architectural Breakdown of Modeled Components:
+
+1. **Domain Model Layer:**
+   - **`Lead` (Aggregate Root):** Encapsulates core appointment data (`customerName`, `phoneNumber`, `email`, `serviceInterest`, `appointmentDate`, `appointmentTime`, `setterId`, `closerId`), manages current pipeline status (`LeadStatus`), and owns the audit history list.
+   - **`HistoryEntry` (Entity):** Immutable audit log item capturing every status transition, outcome note, timestamp, author ID, and user role.
+   - **`User` (Entity):** Represents sales team actors with role-checking methods (`isSetter()`, `isCloser()`).
+   - **`LeadStatus` (`<<Enumeration>>`):** Formal lifecycle states (`PENDING`, `CONTACTED`, `INTERESTED`, `FOLLOW_UP_REQUIRED`, `NO_ANSWER`, `WON`, `LOST`).
+
+2. **Repository Layer (Persistence Abstraction):**
+   - **`ILeadRepository` (`<<Interface>>`):** Establishes the persistence contract (`save`, `update`, `getAll`, `getById`, `getByCloserId`, `getBySetterId`, `clearAll`, `saveAll`).
+   - **`LocalStorageLeadRepository`:** Concrete implementation of `ILeadRepository` targeting browser storage. Insulates domain logic from the underlying storage mechanism.
+
+3. **Service Layer (Business Logic & Messaging):**
+   - **`LeadService`:** Enforces domain constraints, validates appointment inputs, asserts closer permissions before status mutations, and compiles operational metrics.
+   - **`UserService`:** Manages user directory, demo profiles, and active session context.
+   - **`EventEmitter` (`<<Observer>>`):** Centralized publish-subscribe bus for decoupled asynchronous event notifications (`lead:created`, `lead:updated`).
+
+4. **Controller Layer (Application Coordination):**
+   - **`AppController`:** Orchestrates top-level application bootstrapping and active user transitions.
+   - **`DashboardController`:** Handles KPI metrics computation, real-time table rendering, and multi-criteria filtering.
+   - **`ModalController`:** Coordinates UI dialogs for appointment scheduling and closer outcome updates.
+
+---
+
+### 3.2 End-to-End Behavioral Sequence Diagram
+
+The sequence diagram documents the complete lifecycle and message flow across all 5 architectural layers through 3 sequential operational phases.
+
+![LeadFlow Sequence Diagram](./ProjectDesign/LFlow_Sequence_Diagram.svg)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Setter as Setter (Sarah)
     actor Closer as Closer (Alex)
-    participant UI as LeadFlow UI
+    participant UI as Presentation (UI)
+    participant Ctrl as Controller Layer
     participant Service as LeadService
-    participant Storage as LocalStorage
+    participant Repo as ILeadRepository
+    participant Storage as Persistence Storage
 
     %% Phase 1: Appointment Scheduling
-    Note over Setter, Storage: Phase 1: Appointment Scheduling
-    Setter->>UI: Submits new appointment details
-    UI->>Service: createAppointment(leadData)
-    Service->>Storage: Save new lead (status: PENDING)
-    Service-->>UI: Trigger dashboard and KPI refresh
-    UI-->>Setter: Confirm creation and show in table
+    Note over Setter, Storage: Phase 1: Appointment Scheduling (Setter Flow)
+    Setter->>UI: Inputs prospect & schedules appointment
+    UI->>Ctrl: _handleCreateSubmit(event)
+    Ctrl->>Service: createAppointment(payload, setterUser)
+    Service->>Service: validateAppointmentData(payload)
+    Service->>Repo: save(newLead)
+    Repo->>Storage: Persist lead record
+    Service-->>Ctrl: Emit "lead:created" & return newLead
+    Ctrl-->>UI: Refresh dashboard KPIs and table
 
-    %% Phase 2: Closer Consultation & Outcome Update
-    Note over Closer, Storage: Phase 2: Closer Consultation & Outcome Update
-    Closer->>UI: Selects assigned lead
-    UI->>Service: getLeadById(id)
-    Service->>Storage: Retrieve lead record
-    Storage-->>Service: Return lead data
-    Service-->>UI: Populate details and outcome form
-    Closer->>UI: Submits outcome (e.g. WON) and consultation notes
-    UI->>Service: updateLeadOutcome(id, status, notes)
-    Service->>Storage: Persist updated lead and audit history
-    Service-->>UI: Trigger dashboard and KPI refresh
-    UI-->>Closer: Display updated status and audit timeline
+    %% Phase 2: Consultation & Outcome Update
+    Note over Closer, Storage: Phase 2: Consultation & Outcome Update (Closer Flow)
+    Closer->>UI: Selects assigned lead & opens outcome modal
+    UI->>Ctrl: openLeadDetails(leadId)
+    Ctrl->>Service: getLeadById(leadId)
+    Service->>Repo: getById(leadId)
+    Repo-->>Service: Return lead entity
+    Service-->>Ctrl: Populate closer outcome form
+    Closer->>UI: Submits outcome (e.g. WON) + consultation notes
+    UI->>Ctrl: _handleCloserUpdateSubmit(event, leadId)
+    Ctrl->>Service: updateLeadOutcome(leadId, WON, note, closerUser)
+    Service->>Service: verifyPermissions(lead, closerUser)
+    Service->>Repo: update(updatedLead)
+    Repo->>Storage: Persist updated state & immutable history entry
+    Service-->>Ctrl: Emit "lead:updated"
+    Ctrl-->>UI: Update timeline and KPI metrics
 
     %% Phase 3: Closed Feedback Loop
-    Note over Setter, Storage: Phase 3: Closed Feedback Loop
-    Setter->>UI: Inspects lead audit trail
-    UI-->>Setter: Displays full history with Closer notes
+    Note over Setter, Storage: Phase 3: Closed Feedback Loop (Setter Audit Inspection)
+    Setter->>UI: Inspects lead details
+    UI->>Ctrl: openLeadDetails(leadId)
+    Ctrl->>Service: getLeadById(leadId)
+    Service-->>Ctrl: Return lead with full audit trail
+    Ctrl-->>UI: Render read-only view with Closer's timestamped notes
+    UI-->>Setter: Displays completed outcome & historical timeline
 ```
+
+#### Detailed Workflow Phases:
+
+1. **Phase 1: Appointment Setter Schedules & Assigns Lead**
+   - The Setter submits prospect information and assigns a designated Closer.
+   - `ModalController` acquires the active user session from `UserService` and invokes `LeadService.createAppointment()`.
+   - `LeadService` validates all input fields, instantiates an initial `HistoryEntry` (marking creation), builds the `Lead` aggregate, and persists it via `ILeadRepository`.
+   - `LeadService` dispatches a `lead:created` event over the `EventEmitter` bus, triggering `DashboardController` to dynamically refresh metrics and table rows.
+
+2. **Phase 2: Assigned Closer Conducts Consultation & Records Outcome**
+   - The Closer opens their assigned lead; `ModalController` retrieves the record and presents the outcome update interface.
+   - The Closer records the consultation outcome (e.g., advancing status to `WON` or `FOLLOW_UP_REQUIRED`) with detailed notes.
+   - `LeadService` asserts authorization: verifying that the user has the `closer` role and matches the lead's `closerId`.
+   - `Lead.updateStatus()` generates a new immutable `HistoryEntry` documenting the transition, appends it to the history list, and persists the entity.
+   - A `lead:updated` event notifies subscriber controllers to update KPI summaries.
+
+3. **Phase 3: Closed Feedback Loop & History Inspection**
+   - The original Setter inspects the lead to review consultation results.
+   - The UI presents a read-only, chronological audit timeline displaying the Closer's timestamped notes and status changes, completing the operational feedback loop.
 
 ---
 
-## 6. Project Directory Structure
+## 4. Application of SOLID Principles
 
-```
-LeadFlow/
-├── index.html                           # Semantic HTML5 entry document & accessible UI shell
-├── README.md                            # Complete technical and architectural documentation
-├── server.ps1                           # Lightweight PowerShell static server (zero npm dependencies)
-├── ProjectDesign/
-│   ├── LFlow_Structural_Diagram.puml    # PlantUML structural class diagram
-│   ├── LFlow_Structural_Diagram.svg     # Rendered vector structural diagram
-│   ├── LFlow_Sequence_Diagram.puml      # PlantUML end-to-end sequence diagram
-│   └── LFlow_Sequence_Diagram.svg       # Rendered vector sequence diagram
-├── css/
-│   └── styles.css                       # Modern SaaS design system with CSS custom properties
-└── js/
-    ├── app.js                           # Composition Root & Dependency Injection bootstrapper
-    ├── core/
-    │   ├── Constants.js                 # LeadStatus, UserRoles, ServiceOptions, StorageKeys
-    │   └── EventEmitter.js              # Observer / Publish-Subscribe implementation
-    ├── models/
-    │   ├── User.js                      # User domain entity with role helper methods
-    │   ├── Lead.js                      # Lead domain entity with encapsulated audit logic
-    │   └── HistoryEntry.js              # Immutable audit trail record entity
-    ├── repositories/
-    │   ├── ILeadRepository.js           # Abstract repository interface contract (DIP)
-    │   └── LocalStorageLeadRepository.js# Browser localStorage concrete realization
-    ├── services/
-    │   ├── UserService.js               # Demo accounts & active user session state
-    │   └── LeadService.js               # Business logic, validation, permissions, statistics
-    ├── controllers/
-    │   ├── AppController.js             # Master controller, user switcher, app lifecycle
-    │   ├── DashboardController.js       # KPI metrics cards, responsive table, search & filters
-    │   └── ModalController.js           # Create Lead modal, Lead Details & Closer outcome form
-    ├── utils/
-    │   ├── Sanitizer.js                 # XSS prevention, entity encoding, safe formatting
-    │   ├── DateFormatter.js             # Human-friendly dates, 12h times, and relative timestamps
-    │   └── Toast.js                     # Accessible floating feedback alerts
-    └── data/
-        └── seedData.js                  # Realistic demo leads across all stages with full histories
-```
+The system architecture and UML models strictly adhere to the five SOLID principles:
+
+| Principle | Architectural Application in LeadFlow |
+| :--- | :--- |
+| **Single Responsibility Principle (SRP)** | Each class has one well-defined responsibility and reason to change. `LocalStorageLeadRepository` handles persistence only; `LeadService` manages business rules and permissions; `DashboardController` coordinates table and KPI rendering; `Lead` manages its domain state and internal history. |
+| **Open/Closed Principle (OCP)** | Storage access is abstracted behind the `ILeadRepository` contract. Switching to an alternative persistence mechanism (such as `IndexedDB` or a REST API) requires adding a new repository subclass without altering existing service or controller code. |
+| **Liskov Substitution Principle (LSP)** | `LocalStorageLeadRepository` satisfies the full semantic and structural contract defined by `ILeadRepository`. Any consumer requiring `ILeadRepository` can seamlessly consume `LocalStorageLeadRepository` without side effects. |
+| **Interface Segregation Principle (ISP)** | The `ILeadRepository` interface provides a cohesive, role-tailored API (`save`, `update`, `getAll`, `getById`, `getByCloserId`, `getBySetterId`) without burdening consumers with superfluous methods. |
+| **Dependency Inversion Principle (DIP)** | High-level business policies (`LeadService`) depend entirely on the abstraction `ILeadRepository`, rather than on concrete storage implementations. Concrete dependencies are injected during composition. |
 
 ---
 
-## 7. Demo Accounts & Role Permissions Matrix
+## 5. Design Patterns Modeled
 
-LeadFlow includes four built-in demo profiles to simulate realistic sales operations without requiring an external identity provider:
+### 5.1 Gang of Four (GoF) Patterns
 
-| User Name | Role | ID | Email Address | Assigned Permissions & Scope |
-| :--- | :--- | :--- | :--- | :--- |
-| **Sarah Jenkins** | `Appointment Setter` | `setter-1` | `sarah.jenkins@leadflow.io` | Can create appointments; views appointments submitted by Sarah; views closer outcome notes and full audit history. |
-| **Marcus Vance** | `Appointment Setter` | `setter-2` | `marcus.vance@leadflow.io` | Can create appointments; views appointments submitted by Marcus; views closer outcome notes and full audit history. |
-| **Alex Rivera** | `Closer` | `closer-1` | `alex.rivera@leadflow.io` | Views appointments assigned to Alex; updates lead statuses; records consultation outcome notes. |
-| **Elena Rostova** | `Closer` | `closer-2` | `elena.rostova@leadflow.io` | Views appointments assigned to Elena; updates lead statuses; records consultation outcome notes. |
+1. **Repository Pattern (`ILeadRepository`, `LocalStorageLeadRepository`):**  
+   Decouples the domain and service layers from storage technologies, providing an in-memory collection-like interface for domain entities.
 
-> **Note on Role Switching:** The client-side role switcher in the application header is a demonstration mechanism designed for grading and evaluation. In production environments, role assignments are securely verified via server-side session tokens or JWT authentication.
+2. **Observer / Publish-Subscribe Pattern (`EventEmitter`):**  
+   Provides loosely-coupled, event-driven communication between the service layer and presentation controllers when domain mutations occur.
+
+3. **Model-View-Controller (MVC):**  
+   - **Model:** `Lead`, `User`, and `HistoryEntry` encapsulate business logic, domain invariants, and audit history.
+   - **View:** Declarative HTML templates and visual styling.
+   - **Controller:** `AppController`, `DashboardController`, and `ModalController` coordinate user interaction and delegate to services.
+
+4. **Dependency Injection:**  
+   Services and repositories are instantiated and injected through class constructors, enabling loose coupling and unit testability.
+
+### 5.2 GRASP Guidelines
+
+- **Information Expert:** The `Lead` entity maintains its own status transitions and audit history entries because it holds the requisite state information.
+- **Creator:** The `Lead` entity creates `HistoryEntry` instances during status updates.
+- **Controller:** Dedicated controllers handle incoming UI events before delegating to domain services.
+- **Low Coupling & High Cohesion:** Classes are partitioned along clear boundaries with explicit interfaces.
 
 ---
 
-## 8. Supported Lead Status Lifecycle
+## 6. Domain Rules, Roles & State Machine
+
+### 6.1 Role & Permission Matrix
+
+| Capability / Action | Appointment Setter | Closer |
+| :--- | :---: | :---: |
+| Schedule new prospect appointments | :white_check_mark: | :x: |
+| Assign appointments to Closers | :white_check_mark: | :x: |
+| View submitted appointments | :white_check_mark: (Own leads) | :white_check_mark: (Assigned leads) |
+| Conduct consultations & advance status | :x: | :white_check_mark: |
+| Append consultation notes & outcome logs | :x: | :white_check_mark: |
+| Review immutable audit timeline | :white_check_mark: | :white_check_mark: |
+
+### 6.2 Lead Status State Machine
 
 ```
              ┌───────────────┐
@@ -242,7 +266,7 @@ LeadFlow includes four built-in demo profiles to simulate realistic sales operat
      │       └───────┬───────┘       │
      ▼               ▼               ▼
 ┌─────────┐   ┌─────────────┐   ┌────────────┐
-│ NO      │   │ INTERESTED  │   │ FOLLOW-UP  │
+│   NO    │   │ INTERESTED  │   │ FOLLOW-UP  │
 │ ANSWER  │   └──────┬──────┘   │  REQUIRED  │
 └─────────┘          │          └─────┬──────┘
                      │ Final Outcome  │
@@ -254,134 +278,38 @@ LeadFlow includes four built-in demo profiles to simulate realistic sales operat
       └───────────┘     └───────────┘
 ```
 
-1. **`Pending`:** Lead has been scheduled by an Appointment Setter and assigned to a Closer.
-2. **`Contacted`:** Closer has initiated contact via phone or email.
-3. **`Interested`:** Prospect confirmed interest and attended the consultation.
-4. **`Follow-up Required`:** Prospect requested additional collateral, customized quote, or revised timeline.
-5. **`No Answer`:** Closer attempted outreach but could not reach the prospect.
-6. **`Won`:** Sale closed and contract executed (Terminal success state).
-7. **`Lost`:** Prospect declined services or chose an alternate provider (Terminal closed state).
-
 ---
 
-## 9. How to Run the Application
+## 7. Current Project Structure (Part 1)
 
-Because LeadFlow is built using standard **ES6 Modules (`import`/`export`)**, modern web browsers restrict module loading over the `file://` protocol due to **CORS security policies**. A local HTTP static server is required to serve the files.
-
-**No Node.js build step, bundler (`npm install`, webpack, Vite), or package manager is required.**
-
-### Option A: VS Code Live Server Extension (Recommended)
-1. Open Visual Studio Code.
-2. Select **File > Open Folder...** and choose the `leadflow` root directory.
-3. Install the **Live Server** extension by Ritwick Dey (ID: `ritwickdey.LiveServer`).
-4. Right-click [`index.html`](./index.html) in the Explorer sidebar.
-5. Click **"Open with Live Server"**.
-6. Your default browser will launch at `http://127.0.0.1:5500/`.
-
-### Option B: Built-in PowerShell Static Server (Zero Installs)
-LeadFlow includes a native PowerShell static HTTP server script ([`server.ps1`](./server.ps1)):
-1. Open PowerShell in the `leadflow` root folder:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File .\server.ps1 -port 8080
-   ```
-2. Open your web browser and navigate to:  
-   **`http://localhost:8080/`**
-
-### Option C: Python HTTP Server (Built into Python 3)
-```bash
-python -m http.server 8080
 ```
-Open **`http://localhost:8080/`** in your browser.
-
-### Option D: Node.js `npx serve`
-```bash
-npx serve .
+LeadFlow/
+├── README.md                           # System design specification & Part 1 documentation
+└── ProjectDesign/                      # Part 1 Modeling Deliverables
+    ├── LFlow_Structural_Diagram.puml   # PlantUML Structural Class Diagram source
+    ├── LFlow_Structural_Diagram.svg    # Rendered Vector Structural Diagram
+    ├── LFlow_Sequence_Diagram.puml     # PlantUML End-to-End Sequence Diagram source
+    └── LFlow_Sequence_Diagram.svg      # Rendered Vector Sequence Diagram
 ```
 
 ---
 
-## 10. Functional Testing & Demonstration Checklist
+## 8. Planned Implementation & Technical Roadmap (Future Phase)
 
-This step-by-step checklist validates all requirements for peer review and grading:
+While **Part 1** is dedicated to system modeling and architectural design, the diagrams have been constructed to facilitate direct implementation in subsequent phases:
 
-- [ ] **1. Initial Load & Seed Data Verification:**
-  - Launch the application via local server.
-  - Confirm **Sarah Jenkins (Appointment Setter)** is active by default.
-  - Confirm KPI cards display metrics: **Total Submitted**, **Pending Outreach**, **Follow-ups Required**, and **Deals Won**.
-  - Confirm the lead table displays pre-seeded appointments submitted by Sarah.
-
-- [ ] **2. Search & Filter Verification:**
-  - Enter a prospect name (e.g., `Danielle`) in the search input; verify real-time table filtering.
-  - Clear the search field; confirm all leads reappear.
-  - Select `Pending` in the status dropdown; verify only pending leads are shown.
-  - Reset status filter to `All Statuses`.
-
-- [ ] **3. Appointment Creation (Setter Flow):**
-  - Click **"+ New Appointment"**.
-  - Fill in required customer details:
-    - Customer Name: `Acme Innovations`
-    - Phone: `(555) 888-9999`
-    - Email: `contact@acme.io`
-    - Service Interest: `AI Workflow Automation`
-    - Appointment Date & Time: Any upcoming slot
-    - Assigned Closer: `Alex Rivera`
-    - Qualification Notes: `Urgent inbound inquiry from enterprise lead.`
-  - Submit the form.
-  - Verify success toast notification appears, the modal closes, the new lead appears at the top of the table with status `Pending`, and the "Total Submitted" KPI increments.
-
-- [ ] **4. Lead Audit History Inspection:**
-  - Click **"View Details"** on the newly created lead.
-  - Verify that the customer meta and assignment info match the submitted values.
-  - Confirm the **Audit History & Timeline** reflects the initial creation event with Sarah's name, timestamp, and notes.
-  - Confirm a read-only message indicates Sarah is the setter and only Alex Rivera can record outcomes.
-
-- [ ] **5. Role Switching & Closer Workspace:**
-  - In the header account selector, switch to **"Alex Rivera (Closer)"**.
-  - Verify the header badge transitions to Closer styling and the workspace banner updates.
-  - Verify the "+ New Appointment" button is hidden (Closers cannot schedule appointments).
-  - Verify the table displays only appointments assigned to Alex Rivera, including `Acme Innovations`.
-
-- [ ] **6. Status Advancement & Outcome Recording (Closer Flow):**
-  - Click **"Update & History"** on `Acme Innovations`.
-  - Confirm the **Update Lead Outcome** form is enabled.
-  - Change status to **"Interested"** and enter outcome notes: `Conducted initial discovery call. Prospect requested formal pilot proposal.`
-  - Click **"Save Status Update"**.
-  - Confirm success toast and verify that the timeline immediately appends an immutable entry showing `Pending → Interested` by Alex Rivera.
-
-- [ ] **7. Closed Feedback Loop (Setter Synchronization):**
-  - Switch the active user back to **"Sarah Jenkins (Appointment Setter)"**.
-  - Observe `Acme Innovations` in the table: its status badge has automatically updated to **Interested**.
-  - Click **"View Details"**: confirm Alex Rivera's outcome notes and transition record are visible in the timeline.
-
-- [ ] **8. Persistence & Refresh Reliability:**
-  - Refresh the browser (`F5` or `Ctrl+R`).
-  - Confirm all newly scheduled leads and status updates persist cleanly from `localStorage`.
-
-- [ ] **9. Input Validation & XSS Defense:**
-  - Attempt to submit the appointment form with empty fields; verify HTML5 and JavaScript validation errors.
-  - Test defensive sanitization by entering `<script>alert('xss')</script>` in customer notes; verify safe entity escaping in the DOM.
-
-- [ ] **10. Responsive Design:**
-  - Open Chrome/Edge DevTools (`F12`) and activate responsive device mode (`Ctrl+Shift+M`).
-  - Verify layout adaptation on tablet and mobile viewports with horizontal scroll safety and responsive cards.
+- **Target Architecture:** Pure client-side modular web application using **Vanilla JavaScript (ES6+ Modules)**, **HTML5**, and **CSS3**.
+- **Zero-Dependency Philosophy:** No build steps (no Webpack, Vite, or Babel), no external UI frameworks, and no npm package requirements.
+- **Persistence Strategy:** Concrete browser `localStorage` adapter implementing `ILeadRepository` with JSON hydration and defensive error handling.
+- **Security & Integrity:** Input validation and contextual HTML escaping (XSS prevention) on all user-supplied data.
+- **UI/UX Vision:** A modern SaaS workspace featuring dynamic KPI metrics, a reactive appointment table with search/filtering, and modal-based appointment creation and outcome logging workflows.
 
 ---
 
-## 11. Security & Validation Practices
+## 9. Academic Attribution & Course Information
 
-- **Context-Aware XSS Prevention:**  
-  All user-supplied content (names, phone numbers, emails, notes) passes through [`Sanitizer.escapeHTML()`](./js/utils/Sanitizer.js) before insertion into the DOM, preventing script injection attacks.
-- **Strict Input Validation:**  
-  Names must meet minimum length criteria, phone numbers must adhere to numerical formats, emails are checked against standard syntax, and closer assignments are strictly validated against existing closer IDs.
-- **Storage Resilience:**  
-  Persistence calls are wrapped in defensive `try/catch` blocks handling quota limits (`QuotaExceededError`) and corrupted entries with non-destructive fallback mechanisms.
-
----
-
-## 12. Authors & Academic Attribution
-
-- **Project Name:** LeadFlow
+- **Project Title:** LeadFlow — Lead & Appointment Management System
 - **Course:** Software Design Principles and Patterns
+- **Milestone:** Part 1 — Structural & Behavioral System Modeling
 - **Repository:** [https://github.com/00dnn/LeadFlow](https://github.com/00dnn/LeadFlow)
-- **Primary Technologies:** HTML5, CSS3, Vanilla JavaScript (ES6+), PlantUML
 - **License:** Educational Open Source / [MIT](LICENSE)
