@@ -17,14 +17,11 @@
 └─────────────────────────────────┘                             └─────────────────────────────────┘
 ```
 
-### Academic Context & Project Milestones
-Developed for a university course in **Software Design Principles and Patterns**, this project follows a multi-phase engineering lifecycle:
+### Project Milestones
+Developed within the scope of **Software Design Principles and Patterns**, this project follows a multi-phase engineering lifecycle:
 
-- **Part 1 (Current Deliverable):** System Architecture, Object-Oriented Analysis & Design (OOAD), formal **Structural Class Diagram**, and **End-to-End Sequence Diagram** incorporating SOLID design principles, GoF patterns, and GRASP guidelines.
+- **Part 1 (Current Phase):** System Architecture, Object-Oriented Analysis & Design (OOAD), formal **Structural Class Diagram**, and **Behavioral Sequence Diagrams** incorporating SOLID design principles, GoF patterns, and GRASP guidelines.
 - **Part 2 (Future Phase):** Full-stack client implementation translating these architectural models into code (planned in vanilla ES6+ JavaScript, semantic HTML5, and CSS3).
-
-> [!NOTE]
-> **Part 1 Focus:** This repository and document currently focus on the architectural modeling deliverables (Class and Sequence Diagrams). Source code implementation and runtime testing will be completed in subsequent project phases.
 
 ---
 
@@ -73,21 +70,21 @@ The system is designed around a decoupled, 5-layer architecture ensuring high co
 
 ---
 
-## 3. Part 1 Deliverables: UML Modeling Specifications
+## 3. UML Modeling Specifications
 
-The core deliverables for **Part 1** are maintained as formal PlantUML models and high-resolution vector diagrams in the [`ProjectDesign/`](./ProjectDesign/) directory.
+The core modeling deliverables are maintained as formal PlantUML models and high-resolution vector diagrams in the [`ProjectDesign/`](./ProjectDesign/) directory.
 
-To support both **end-to-end architectural evaluation** and **modular group presentations**, the behavioral modeling is provided in two complementary formats:
-1. **Modular Sequence Diagrams (Recommended for Team Presentations):** Focused on individual scenarios so individual team members can present their respective features without clutter.
+The behavioral modeling is provided in two complementary formats:
+1. **Scenario-Specific Sequence Diagrams:** Focused on individual workflows (appointment creation, closer consultation, and audit inspection) with clear participant boundaries.
 2. **Master Comprehensive Sequence Diagram:** An end-to-end overview illustrating the entire pipeline lifecycle in a single unified diagram.
 
-| Deliverable | PlantUML Source File | Rendered Vector Output | Scope & Presentation Context |
+| Deliverable | PlantUML Source File | Rendered Vector Output | Scope & Workflow Description |
 | :--- | :--- | :--- | :--- |
-| **Structural Class Diagram** | [`LFlow_Structural_Diagram.puml`](./ProjectDesign/LFlow_Structural_Diagram.puml) | [`LFlow_Structural_Diagram.svg`](./ProjectDesign/LFlow_Structural_Diagram.svg) | Complete static architecture: entities, repositories, services, and controllers |
-| **Scenario 1: Appointment Scheduling** | [`LFlow_Seq_1_Appointment_Creation.puml`](./ProjectDesign/LFlow_Seq_1_Appointment_Creation.puml) | [`LFlow_Seq_1_Appointment_Creation.svg`](./ProjectDesign/LFlow_Seq_1_Appointment_Creation.svg) | Setter workflow: form intake, validation, entity creation, repository save, and event dispatch |
-| **Scenario 2: Consultation & Outcome** | [`LFlow_Seq_2_Closer_Outcome.puml`](./ProjectDesign/LFlow_Seq_2_Closer_Outcome.puml) | [`LFlow_Seq_2_Closer_Outcome.svg`](./ProjectDesign/LFlow_Seq_2_Closer_Outcome.svg) | Closer workflow: role verification gate, state transition (`WON`), and immutable history generation |
-| **Scenario 3: Audit Review Loop** | [`LFlow_Seq_3_Audit_Inspection.puml`](./ProjectDesign/LFlow_Seq_3_Audit_Inspection.puml) | [`LFlow_Seq_3_Audit_Inspection.svg`](./ProjectDesign/LFlow_Seq_3_Audit_Inspection.svg) | Setter feedback loop: read-only access guard and timeline verification |
-| **Master Sequence Diagram (All-in-One)** | [`LFlow_Sequence_Diagram.puml`](./ProjectDesign/LFlow_Sequence_Diagram.puml) | [`LFlow_Sequence_Diagram.svg`](./ProjectDesign/LFlow_Sequence_Diagram.svg) | Full end-to-end lifecycle showing all 3 phases and all actors in a single overview |
+| **Structural Class Diagram** | [`LFlow_Structural_Diagram.puml`](./ProjectDesign/Class%20Diagram/LFlow_Structural_Diagram.puml) | [`LFlow_Structural_Diagram.svg`](./ProjectDesign/Class%20Diagram/LFlow_Structural_Diagram.svg) | Complete static architecture: entities, repositories, services, and controllers |
+| **Scenario 1: Appointment Scheduling** | [`LFlow_Seq_1_Appointment_Creation.puml`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_1_Appointment_Creation.puml) | [`LFlow_Seq_1_Appointment_Creation.svg`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_1_Appointment_Creation.svg) | Setter workflow: form intake, validation, entity creation, repository save, and event dispatch |
+| **Scenario 2: Consultation & Outcome** | [`LFlow_Seq_2_Closer_Outcome.puml`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_2_Closer_Outcome.puml) | [`LFlow_Seq_2_Closer_Outcome.svg`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_2_Closer_Outcome.svg) | Closer workflow: role verification gate, state transition (`WON`), and immutable history generation |
+| **Scenario 3: Audit Review Loop** | [`LFlow_Seq_3_Audit_Inspection.puml`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_3_Audit_Inspection.puml) | [`LFlow_Seq_3_Audit_Inspection.svg`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_3_Audit_Inspection.svg) | Setter feedback loop: read-only access guard and timeline verification |
+| **Master Sequence Diagram (All-in-One)** | [`LFlow_Sequence_Diagram.puml`](./ProjectDesign/Sequence%20Diagrams/LFlow_Sequence_Diagram.puml) | [`LFlow_Sequence_Diagram.svg`](./ProjectDesign/Sequence%20Diagrams/LFlow_Sequence_Diagram.svg) | Full end-to-end lifecycle showing all 3 phases and all actors in a single overview |
 
 ---
 
@@ -95,7 +92,7 @@ To support both **end-to-end architectural evaluation** and **modular group pres
 
 The structural class diagram specifies all classes, data attributes, method signatures, visibility modifiers, and associations across the entire architecture.
 
-![LeadFlow Structural Class Diagram](./ProjectDesign/LFlow_Structural_Diagram.svg)
+![LeadFlow Structural Class Diagram](./ProjectDesign/Class%20Diagram/LFlow_Structural_Diagram.svg)
 
 #### Architectural Breakdown of Modeled Components:
 
@@ -123,52 +120,49 @@ The structural class diagram specifies all classes, data attributes, method sign
 
 ### 3.2 Behavioral Sequence Diagrams (Modular Scenarios)
 
-Dividing sequence diagrams by specific use cases ensures each diagram remains clean, legible, and focused on the participants relevant to that workflow—ideal for dividing presentation sections among team members.
+The behavioral sequence diagrams break down the core workflows into modular, focused interactions.
 
 #### Scenario 1: Appointment Intake, Scheduling & Closer Assignment (Setter Workflow)
-*Presented by Team Member covering Lead Qualification & Intake.*
 
 This interaction traces an Appointment Setter scheduling a prospective client and assigning them to a Closer. It highlights input validation in `LeadService`, domain entity construction (`HistoryEntry` and `Lead`), persistence via `ILeadRepository`, and decoupled UI refresh via `EventEmitter`.
 
-![Scenario 1: Appointment Scheduling](./ProjectDesign/LFlow_Seq_1_Appointment_Creation.svg)
+![Scenario 1: Appointment Scheduling](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_1_Appointment_Creation.svg)
 
-- **Source File:** [`LFlow_Seq_1_Appointment_Creation.puml`](./ProjectDesign/LFlow_Seq_1_Appointment_Creation.puml)
+- **Source File:** [`LFlow_Seq_1_Appointment_Creation.puml`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_1_Appointment_Creation.puml)
 - **Key Flow:** Setter submits form → `ModalController` fetches active user → `LeadService.createAppointment()` validates inputs → instantiates initial `HistoryEntry(action="created")` and `Lead(status=PENDING)` → persists via `ILeadRepository.save()` → dispatches `lead:created` event → `DashboardController` refreshes table and KPI counters.
 
 ---
 
 #### Scenario 2: Closer Consultation, Status Advancement & Audit Recording (Closer Workflow)
-*Presented by Team Member covering Deal Advancement, Security Gates & Audit Logic.*
 
 This interaction illustrates an assigned Closer conducting a consultation and documenting the outcome (e.g., closing the deal as `WON`). It highlights authorization validation in `LeadService`, state transition rules, and immutable audit appending.
 
-![Scenario 2: Closer Consultation & Outcome](./ProjectDesign/LFlow_Seq_2_Closer_Outcome.svg)
+![Scenario 2: Closer Consultation & Outcome](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_2_Closer_Outcome.svg)
 
-- **Source File:** [`LFlow_Seq_2_Closer_Outcome.puml`](./ProjectDesign/LFlow_Seq_2_Closer_Outcome.puml)
+- **Source File:** [`LFlow_Seq_2_Closer_Outcome.puml`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_2_Closer_Outcome.puml)
 - **Key Flow:** Closer opens assigned lead → `ModalController` fetches record → Closer selects new status (`WON`) and inputs consultation notes → `LeadService.updateLeadOutcome()` asserts closer role and ID match (security gate) → calls `Lead.updateStatus()` which appends a timestamped `HistoryEntry` → persists updated aggregate via `ILeadRepository.update()` → emits `lead:updated` to increment Deals Won KPIs.
 
 ---
 
 #### Scenario 3: Closed Feedback Loop — Setter Inspects Immutable Audit Timeline
-*Presented by Team Member covering Historical Integrity & Cross-Role Visibility.*
 
 This scenario demonstrates the closed feedback loop: the Appointment Setter returns to the lead to inspect consultation notes recorded by the Closer.
 
-![Scenario 3: Audit Review Loop](./ProjectDesign/LFlow_Seq_3_Audit_Inspection.svg)
+![Scenario 3: Audit Review Loop](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_3_Audit_Inspection.svg)
 
-- **Source File:** [`LFlow_Seq_3_Audit_Inspection.puml`](./ProjectDesign/LFlow_Seq_3_Audit_Inspection.puml)
+- **Source File:** [`LFlow_Seq_3_Audit_Inspection.puml`](./ProjectDesign/Sequence%20Diagrams/LFlow_Seq_3_Audit_Inspection.puml)
 - **Key Flow:** Setter re-opens lead details → `ModalController` requests lead by ID → repository reconstitutes entity with complete historical timeline → UI renders a read-only view displaying Closer's timestamped notes and status transition (`PENDING → WON`), closing the sales feedback loop.
 
 ---
 
 ### 3.3 Master Comprehensive Sequence Diagram (Unified Architecture)
 
-For formal architectural review and end-to-end grading, all three sequential operational phases are also consolidated into a single master sequence diagram:
+For an end-to-end view of the architecture, all operational phases are consolidated into a unified master sequence diagram:
 
-![LeadFlow Master Sequence Diagram](./ProjectDesign/LFlow_Sequence_Diagram.svg)
+![LeadFlow Master Sequence Diagram](./ProjectDesign/Sequence%20Diagrams/LFlow_Sequence_Diagram.svg)
 
-- **PlantUML Source File:** [`LFlow_Sequence_Diagram.puml`](./ProjectDesign/LFlow_Sequence_Diagram.puml)
-- **Vector Output:** [`LFlow_Sequence_Diagram.svg`](./ProjectDesign/LFlow_Sequence_Diagram.svg)
+- **PlantUML Source File:** [`LFlow_Sequence_Diagram.puml`](./ProjectDesign/Sequence%20Diagrams/LFlow_Sequence_Diagram.puml)
+- **Vector Output:** [`LFlow_Sequence_Diagram.svg`](./ProjectDesign/Sequence%20Diagrams/LFlow_Sequence_Diagram.svg)
 
 ---
 
@@ -253,27 +247,31 @@ The system architecture and UML models strictly adhere to the five SOLID princip
 
 ---
 
-## 7. Current Project Structure (Part 1)
+## 7. Project Structure
 
 ```
 LeadFlow/
-├── README.md                                # System design specification & Part 1 documentation
-└── ProjectDesign/                           # Part 1 Modeling Deliverables
-    ├── LFlow_Structural_Diagram.puml        # PlantUML Structural Class Diagram source
-    ├── LFlow_Structural_Diagram.svg         # Rendered Vector Structural Diagram
-    ├── LFlow_Seq_1_Appointment_Creation.puml# Scenario 1 PUML: Appointment Scheduling (Setter Flow)
-    ├── LFlow_Seq_1_Appointment_Creation.svg # Scenario 1 Vector SVG: Presentation slide ready
-    ├── LFlow_Seq_2_Closer_Outcome.puml      # Scenario 2 PUML: Consultation & Outcome (Closer Flow)
-    ├── LFlow_Seq_2_Closer_Outcome.svg       # Scenario 2 Vector SVG: Presentation slide ready
-    ├── LFlow_Seq_3_Audit_Inspection.puml    # Scenario 3 PUML: Audit Inspection & Closed Feedback Loop
-    ├── LFlow_Seq_3_Audit_Inspection.svg     # Scenario 3 Vector SVG: Presentation slide ready
-    ├── LFlow_Sequence_Diagram.puml          # Master End-to-End Sequence Diagram source
-    └── LFlow_Sequence_Diagram.svg           # Master End-to-End Vector Sequence Diagram
+├── README.md                                # System design specification & architecture documentation
+├── PDF/
+│   └── SWEN383_P1_Marimangat.pdf            # Compiled project design document
+└── ProjectDesign/                           # UML Modeling Deliverables
+    ├── Class Diagram/
+    │   ├── LFlow_Structural_Diagram.puml    # PlantUML Structural Class Diagram source
+    │   └── LFlow_Structural_Diagram.svg     # Rendered Vector Structural Diagram
+    └── Sequence Diagrams/
+        ├── LFlow_Seq_1_Appointment_Creation.puml  # Scenario 1 PUML: Appointment Scheduling (Setter Flow)
+        ├── LFlow_Seq_1_Appointment_Creation.svg   # Scenario 1 Vector SVG
+        ├── LFlow_Seq_2_Closer_Outcome.puml        # Scenario 2 PUML: Consultation & Outcome (Closer Flow)
+        ├── LFlow_Seq_2_Closer_Outcome.svg         # Scenario 2 Vector SVG
+        ├── LFlow_Seq_3_Audit_Inspection.puml      # Scenario 3 PUML: Audit Inspection & Feedback Loop
+        ├── LFlow_Seq_3_Audit_Inspection.svg       # Scenario 3 Vector SVG
+        ├── LFlow_Sequence_Diagram.puml            # Master End-to-End Sequence Diagram source
+        └── LFlow_Sequence_Diagram.svg             # Master End-to-End Vector Sequence Diagram
 ```
 
 ---
 
-## 8. Planned Implementation & Technical Roadmap (Future Phase)
+## 8. Planned Implementation & Technical Roadmap
 
 While **Part 1** is dedicated to system modeling and architectural design, the diagrams have been constructed to facilitate direct implementation in subsequent phases:
 
