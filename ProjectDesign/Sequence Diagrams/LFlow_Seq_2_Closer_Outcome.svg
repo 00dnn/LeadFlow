@@ -166,9 +166,17 @@
   <line x1="1440" y1="535" x2="482" y2="535" stroke="#0284C7" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="495" y="529" fill="#0369A1" font-size="11">11. Observer: on("lead:updated") -&gt; increments "Deals Won" KPI &amp; updates table badge</text>
 
+  <!-- Return updated lead to ModalCtrl -->
+  <line x1="750" y1="555" x2="362" y2="555" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="370" y="549" fill="#64748B" font-size="10">returns updated lead entity</text>
+
   <!-- 2.14 Refresh modal & feedback -->
-  <line x1="360" y1="560" x2="242" y2="560" stroke="#0284C7" stroke-width="1.2" marker-end="url(#arrow)"/>
-  <text x="250" y="554" fill="#0369A1" font-size="10">refreshCurrentDetails(): displays new HistoryEntry in timeline &amp; Toast.success()</text>
+  <line x1="360" y1="575" x2="242" y2="575" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="250" y="569" fill="#0369A1" font-size="10">refreshCurrentDetails(): displays new HistoryEntry in timeline &amp; Toast.success()</text>
+
+  <!-- Return feedback to Closer -->
+  <line x1="240" y1="595" x2="112" y2="595" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="120" y="589" fill="#64748B" font-size="10">Displays updated audit trail with "WON" status pill</text>
 
   <!-- Legend -->
   <rect x="50" y="615" width="1480" height="38" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>

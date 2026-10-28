@@ -189,7 +189,7 @@
   <text x="250" y="549" fill="#0369A1" font-size="10">Increments "Total Submitted" KPI &amp; renders new lead row in table</text>
 
   <!-- ModalCtrl closes & shows Toast -->
-  <line x1="360" y1="580" x2="242" y2="580" stroke="#64748B" stroke-width="1.2" marker-end="url(#arrow-return)"/>
+  <line x1="360" y1="580" x2="242" y2="580" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
   <text x="250" y="574" fill="#64748B" font-size="10">closeCreateModal() &amp; Toast.success("Appointment scheduled successfully!")</text>
 
   <!-- UI feedback to Setter -->
@@ -259,9 +259,17 @@
   <line x1="1475" y1="1060" x2="482" y2="1060" stroke="#0284C7" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="495" y="1054" fill="#0369A1" font-size="11">2.10 Observer callback: updates "Deals Won" KPI &amp; replaces status pill in table</text>
 
+  <!-- Return updated lead to ModalCtrl -->
+  <line x1="630" y1="1075" x2="362" y2="1075" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="370" y="1069" fill="#64748B" font-size="10">returns updated lead entity</text>
+
   <!-- ModalCtrl refreshes view -->
-  <line x1="360" y1="1085" x2="242" y2="1085" stroke="#0284C7" stroke-width="1.2" marker-end="url(#arrow)"/>
-  <text x="250" y="1079" fill="#0369A1" font-size="10">refreshCurrentDetails(): appends new HistoryEntry to timeline view &amp; Toast.success()</text>
+  <line x1="360" y1="1092" x2="242" y2="1092" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="250" y="1086" fill="#0369A1" font-size="10">refreshCurrentDetails(): appends new HistoryEntry to timeline view &amp; Toast.success()</text>
+
+  <!-- Return feedback to Closer -->
+  <line x1="240" y1="1108" x2="1608" y2="1108" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="250" y="1102" fill="#64748B" font-size="10">Displays updated audit trail with "WON" status pill</text>
 
 
   <!-- ======================================================== -->
@@ -282,13 +290,25 @@
   <line x1="360" y1="1220" x2="628" y2="1220" stroke="#16A34A" stroke-width="1.5" marker-end="url(#arrow-green)"/>
   <text x="370" y="1214" fill="#15803D" font-size="11">3.3 leadService.getLeadById(leadId)</text>
 
+  <!-- Service delegates to Repo -->
+  <line x1="630" y1="1234" x2="1188" y2="1234" stroke="#D97706" stroke-width="1.2" marker-end="url(#arrow-amber)"/>
+  <text x="645" y="1228" fill="#B45309" font-size="10">repository.getById(leadId)</text>
+
+  <!-- Repo returns lead to Service -->
+  <line x1="1190" y1="1248" x2="632" y2="1248" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="645" y="1242" fill="#64748B" font-size="10">returns lead (reconstituted with HistoryEntry list)</text>
+
+  <!-- Service returns lead to ModalCtrl -->
+  <line x1="630" y1="1262" x2="362" y2="1262" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="370" y="1256" fill="#64748B" font-size="10">returns lead domain entity</text>
+
   <!-- ModalCtrl renders Read-Only Setter View -->
-  <line x1="360" y1="1250" x2="242" y2="1250" stroke="#0284C7" stroke-width="1.2" marker-end="url(#arrow)"/>
-  <text x="250" y="1244" fill="#0369A1" font-size="10">Renders read-only notice banner + full timeline showing Closer Alex's transition (PENDING -&gt; WON) &amp; timestamped notes</text>
+  <line x1="360" y1="1278" x2="242" y2="1278" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="250" y="1272" fill="#0369A1" font-size="10">Renders read-only notice banner + full timeline showing Closer Alex's transition (PENDING -&gt; WON) &amp; timestamped notes</text>
 
   <!-- Setter inspects outcome -->
-  <line x1="240" y1="1275" x2="112" y2="1275" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
-  <text x="120" y="1269" fill="#64748B" font-size="10">Loop closed: Setter verifies appointment was successfully won</text>
+  <line x1="240" y1="1295" x2="112" y2="1295" stroke="#64748B" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-return)"/>
+  <text x="120" y="1289" fill="#64748B" font-size="10">Loop closed: Setter verifies appointment was successfully won</text>
 
   <!-- Bottom Legend -->
   <rect x="50" y="1325" width="1620" height="40" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
