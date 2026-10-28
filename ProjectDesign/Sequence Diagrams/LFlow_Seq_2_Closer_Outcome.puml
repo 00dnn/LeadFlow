@@ -58,7 +58,7 @@ deactivate Repo
 Service --> ModalCtrl : lead
 deactivate Service
 
-ModalCtrl -> UI : Renders Customer Meta, Audit Timeline, and Closer Update Form
+ModalCtrl --> UI : Renders Customer Meta, Audit Timeline, and Closer Update Form
 deactivate ModalCtrl
 UI --> Closer : Shows editable Outcome Form (status options & notes textarea)
 deactivate UI
@@ -117,7 +117,7 @@ Service --> ModalCtrl : lead
 deactivate Service
 
 ModalCtrl -> ModalCtrl : refreshCurrentDetails()
-ModalCtrl -> UI : Re-renders timeline with new audit entry & Toast.success()
+ModalCtrl --> UI : Re-renders timeline with new audit entry & Toast.success()
 deactivate ModalCtrl
 UI --> Closer : Displays updated audit trail with "WON" status pill
 deactivate UI

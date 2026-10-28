@@ -69,7 +69,7 @@ deactivate Repo
 Service --> ModalCtrl : lead
 deactivate Service
 
-ModalCtrl -> UI : Renders Read-Only View with complete chronological audit history
+ModalCtrl --> UI : Renders Read-Only View with complete chronological audit history
 deactivate ModalCtrl
 
 UI --> Setter : Setter reviews timestamped outcome notes and transition (PENDING -> WON)

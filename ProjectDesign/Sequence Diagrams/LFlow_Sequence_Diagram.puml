@@ -96,7 +96,7 @@ deactivate EventBus
 Service --> ModalCtrl : newLead
 deactivate Service
 
-ModalCtrl -> UI : closeCreateModal() & Toast.success("Appointment scheduled")
+ModalCtrl --> UI : closeCreateModal() & Toast.success("Appointment scheduled")
 deactivate ModalCtrl
 
 UI --> Setter : Displays success feedback & updated dashboard
@@ -116,7 +116,7 @@ Repo --> Service : lead
 deactivate Repo
 Service --> ModalCtrl : lead
 deactivate Service
-ModalCtrl -> UI : Renders Customer Meta, Audit Timeline, and Closer Update Form
+ModalCtrl --> UI : Renders Customer Meta, Audit Timeline, and Closer Update Form
 deactivate ModalCtrl
 UI --> Closer : Shows editable Outcome Form (status options & notes textarea)
 deactivate UI
@@ -175,7 +175,7 @@ Service --> ModalCtrl : lead
 deactivate Service
 
 ModalCtrl -> ModalCtrl : refreshCurrentDetails()
-ModalCtrl -> UI : Re-renders timeline with new audit entry & Toast.success()
+ModalCtrl --> UI : Re-renders timeline with new audit entry & Toast.success()
 deactivate ModalCtrl
 UI --> Closer : Displays updated audit trail with "WON" status pill
 deactivate UI
@@ -190,11 +190,21 @@ ModalCtrl -> Service : getLeadById(leadId)
 activate Service
 Service -> Repo : getById(leadId)
 activate Repo
+Repo -> LocalStorage : getItem("leadflow_leads")
+activate LocalStorage
+LocalStorage --> Repo : serializedLeads
+deactivate LocalStorage
+
+Repo -> LeadEntity : reconstitute with history list
+activate LeadEntity
+LeadEntity --> Repo : lead (with complete HistoryEntry list)
+deactivate LeadEntity
+
 Repo --> Service : lead
 deactivate Repo
 Service --> ModalCtrl : lead
 deactivate Service
-ModalCtrl -> UI : Renders Read-Only View with complete chronological audit history
+ModalCtrl --> UI : Renders Read-Only View with complete chronological audit history
 deactivate ModalCtrl
 UI --> Setter : Setter reviews timestamped outcome notes and transition (PENDING -> WON)
 deactivate UI

@@ -97,7 +97,7 @@ deactivate EventBus
 Service --> ModalCtrl : newLead
 deactivate Service
 
-ModalCtrl -> UI : closeCreateModal() & Toast.success("Appointment scheduled successfully!")
+ModalCtrl --> UI : closeCreateModal() & Toast.success("Appointment scheduled successfully!")
 deactivate ModalCtrl
 
 UI --> Setter : Displays success feedback & updated dashboard
