@@ -163,21 +163,26 @@ class ModalController {
 
 ' Relationships & Realizations
 ILeadRepository <|.. LocalStorageLeadRepository : <<Realizes>>
-LeadService --> ILeadRepository : <<Dependency Inversion>>
-LeadService --> UserService : <<Uses>>
-LeadService --> EventEmitter : <<Publishes Events>>
-LocalStorageLeadRepository ..> Lead : <<Instantiates / Persists>>
+LeadService "1" --> "1" ILeadRepository : <<Dependency Inversion>>
+LeadService "1" --> "1" UserService : <<Uses>>
+LeadService "1" --> "1" EventEmitter : <<Publishes Events>>
+LeadService "1" ..> "0..*" Lead : <<Creates & Returns>>
+LocalStorageLeadRepository "1" ..> "0..*" Lead : <<Instantiates / Persists>>
 
-Lead *-- "0..*" HistoryEntry : <<Maintains Audit Trail>>
-Lead -right-> LeadStatus : <<Has>>
-Lead --> User : setter
-Lead --> User : closer
+UserService "1" --> "0..*" User : <<Manages>>
+Lead "1" *-- "0..*" HistoryEntry : <<Maintains Audit Trail>>
+Lead "0..*" -right-> "1" LeadStatus : <<Has>>
+Lead "0..*" --> "1" User : setter
+Lead "0..*" --> "1" User : closer
 
-AppController --> LeadService : <<Controls>>
-AppController --> UserService : <<Controls>>
-AppController --> DashboardController : <<Coordinates>>
-AppController --> ModalController : <<Coordinates>>
-DashboardController --> LeadService : <<Reads & Filters>>
-ModalController --> LeadService : <<Mutates & Updates>>
+AppController "1" --> "1" LeadService : <<Controls>>
+AppController "1" --> "1" UserService : <<Controls>>
+AppController "1" --> "1" DashboardController : <<Coordinates>>
+AppController "1" --> "1" ModalController : <<Coordinates>>
+DashboardController "1" --> "1" LeadService : <<Reads & Filters>>
+DashboardController "1" --> "1" UserService : <<Uses>>
+DashboardController "1" --> "1" EventEmitter : <<Subscribes>>
+ModalController "1" --> "1" LeadService : <<Mutates & Updates>>
+ModalController "1" --> "1" UserService : <<Uses>>
 
 @enduml
